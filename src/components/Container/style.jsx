@@ -5,6 +5,6 @@ export const Container = styled.div.attrs(props=>({
     flexBasis:props.width+'vw'
   }
 }))`
-  background-color: lightgreen;
+  background-color: #21252B;
   height: 100vh;
 `

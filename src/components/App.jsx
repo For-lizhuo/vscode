@@ -20,6 +20,7 @@ export default function(){
   };
   
   const onMouseUp = ()=>{
+    if(!isDragging) return;
     dispatch(endDrag());
   };
   return(

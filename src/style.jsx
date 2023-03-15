@@ -4,6 +4,7 @@ export const GlobalStyle = createGlobalStyle`
   * {
     padding: 0;
     margin: 0;
+    user-select: none;
   }
 `
 

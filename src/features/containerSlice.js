@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isDragging:false,
-  containerWidth:17
+  containerWidth:22.5
 };
 
 const navBarSlice = createSlice({
