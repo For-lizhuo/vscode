@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { containerWidth } from "../config";
 
 const initialState = {
   isDragging:false,
-  containerWidth:22.5
+  containerWidth:containerWidth
 };
 
 const navBarSlice = createSlice({

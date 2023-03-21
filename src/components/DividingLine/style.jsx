@@ -6,7 +6,7 @@ export const DividingLine = styled.div.attrs(props => ({
   },
 }))`
   background-color: #282C34;
-  flex-basis: 0.2vw;
+  flex-basis: 0.3vw;
   height: 100vh;
   &:hover{
     background-color: #3E4452;

@@ -13,7 +13,7 @@ export const Ul = styled.ul`
 `
 export const Li = styled.li.attrs(props => ({
   style: {
-    borderLeft:props.chosen==true?'0.3vh solid white':'',
+    borderLeft:props.chosen==true?'0.3vh solid #D7DAD0':'0.3vh solid #282C34',
   }
 }
 ))`

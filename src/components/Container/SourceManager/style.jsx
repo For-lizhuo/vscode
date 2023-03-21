@@ -7,7 +7,7 @@ export const SourceManager = styled.div`
 `
 
 export const HeaderContainer = styled.header`
-  flex-basis: 2%;
+  flex-basis: 2.6vh;
   display: flex;
   align-items: center;
   background-color: #21252B;
@@ -16,7 +16,7 @@ export const HeaderContainer = styled.header`
 `
 export const HeaderTitle = styled.div`
   color: #ABB2BF;
-  font-size: 1vh;
+  font-size: 1.6vh;
 `
 export const Ellipsis = styled.div`
   display: flex;
@@ -32,9 +32,6 @@ export const Ellipsis = styled.div`
 `
 export const Container = styled.div`
   background-color: #282C34;
-  &:hover{
-    cursor: pointer;
-  };
   &:first-of-type{
     height: auto;
   }
@@ -42,22 +39,28 @@ export const Container = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
   }
 `
 export const Head = styled.div`
   display: flex;
+  align-items: center;
   padding: 0.5vh 0;
-  border: 0.1vw solid #282C34;
+  border: 0.1vh solid #282C34;
+  &:first-of-type{
+    flex-basis: 2.5%;
+  }
+  &:hover{
+    cursor: pointer;
+  };
   &:focus{
-    border: 0.1vw solid #3E4452;
-  }
-  &:last-of-type{
-    height: auto;
-  }
+    border: 0.1vh solid #3E4452;
+  };
 `
 export const Title = styled.div`
   font-weight: bold;
-  font-size: 1vh;
+  font-size: 1.6vh;
   padding-left: 0.2vw;
   color: #ABB2BF;
 `
@@ -66,15 +69,50 @@ export const List = styled.div`
   color: #D7DAE0;
   font-size: 1vw;
 `
-export const FolderContainer = styled.div`
-  border: 0.1vw solid #21252B;
-  flex: 1;
-  background-color: #21252B;
+export const Info = styled.div.attrs((props)=>({
+  style:{
+    paddingLeft: props.layer/2+0.8+'vw',
+    backgroundColor: props.isChosen?'#2C313A':'inherit',
+    border:props.isChosen?'#2C313A 0.1vh solid':'0.1vh solid #21252B'
+  }
+}))`
+  display: flex;
+  align-items: center;
+  height: 2.8vh;
+  &:hover{
+    cursor: pointer;
+  };
   &:focus{
-    border: 0.1vw solid #3E4452;
+    border: 0.1vh solid #3E4452 !important;
   }
 `
-
+export const Name = styled.div`
+  color: #ABB2BF;
+  font-size: 1.6vh;
+  padding-left: 0.2vw;
+`
+export const FolderContainer = styled.div`
+  border: 0.1vh solid #282C34;
+  flex-basis:97.5%;
+  display: flex;
+  flex-direction: column;
+  background-color: #21252B;
+  overflow-y: auto;
+  &:focus{
+    border: 0.1vh solid #3E4452;
+  }
+  &::-webkit-scrollbar{
+    background-color: #282C34;
+    width: 0.6vw;
+  };
+  &::-webkit-scrollbar-thumb{
+    height:20vh;
+    background-color: #373C47;
+  };
+`
+export const FolderList = styled.div`
+  flex: 1;
+`
 export const OpenFolderTitle = styled.div`
   color: #ABB2BF;
   font-size: 1.6vh;
@@ -94,4 +132,7 @@ export const Button = styled.button`
     background-color: #4D5565;
     cursor: pointer;
   }
+`
+export const Hidden = styled.div`
+  visibility: hidden;
 `

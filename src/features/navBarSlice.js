@@ -24,16 +24,6 @@ const navBarSlice = createSlice({
       reducer(state){
         state.display = true
       }
-    },
-    startDrag:{
-      reducer(state){
-        state.isDragging = true
-      }
-    },
-    endDrag:{
-      reducer(state){
-        state.isDragging = false
-      }
     }
   }
 })

@@ -1,15 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isOpen:false
+  isOpen:false,
+  fileTree:null,
 };
 
 const folderSlice = createSlice({
   name:'folder',
   initialState,
   reducers:{
-    open(state){
+    open(state,action){
       state.isOpen = true;
+      state.fileTree = action.payload;
     },
     close(state){
       state.isOpen = false;
