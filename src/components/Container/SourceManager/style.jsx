@@ -5,7 +5,6 @@ export const SourceManager = styled.div`
   display: flex;
   flex-direction: column;
 `
-
 export const HeaderContainer = styled.header`
   flex-basis: 2.6vh;
   display: flex;
@@ -64,10 +63,66 @@ export const Title = styled.div`
   padding-left: 0.2vw;
   color: #ABB2BF;
 `
-export const List = styled.div`
-  background-color: #323842;
-  color: #D7DAE0;
-  font-size: 1vw;
+export const EditorListContainer = styled.div`
+  background-color: #21252B;
+  display: flex;
+  flex-direction:column ;
+`
+export const NavLink = styled.div.attrs(props=>({
+  style:{
+    backgroundColor:props.isChosen?'#323842':'#21252B',
+    border:props.isChosen?'#323842 0.1vh solid':'0.1vh solid #21252B'
+  }
+}
+))`
+  display: flex;
+  align-items: center;
+  font-size:1.6vh;
+  cursor: pointer;
+  padding: 0 0.6vw;
+  height: 2.8vh;
+  &:focus{
+    border: 0.1vh solid #3E4452;
+  };
+  &:hover{
+    background-color:#2C313A !important;
+    border: 0.1vh solid #2C313A !important;
+  }
+
+`
+export const FileName = styled.div.attrs(props=>({
+  style:{
+    color:props.isChosen?'#DCDCDC':'#76807B'
+  }
+}
+))`
+  white-space: nowrap;
+  padding-left: 0.2vw;
+`
+export const Close = styled.div.attrs(props=>({
+  style:{
+    color: props.isChosen?'#D2DAE0':'#878A8F'
+  }
+}
+))`
+  margin:0 0.5vw 0 1vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius:20%;
+  padding: 0.2vh;
+  &:hover{
+    background-color: #3F444B;
+  }
+`
+export const PrePath = styled.div.attrs(props=>({
+  style:{
+    color:props.isChosen?'#979A9E':'#6E7178'
+  }
+}
+))`
+  white-space: nowrap;
+  padding-left: 0.2vw;
 `
 export const Info = styled.div.attrs((props)=>({
   style:{

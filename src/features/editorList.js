@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  quantity:0,
-  value:[]
+  //保存每个文件的path和property
+  map:new Map()
 };
 
 const editorListSlice = createSlice({
@@ -10,24 +10,17 @@ const editorListSlice = createSlice({
   initialState,
   reducers:{
     add(state,action){
-      state.value.push(action.payload);
-      state.quantity++;
+      state.map.set(action.payload.path,action.payload.property);
     },
     remove(state,action){
-      state.quantity--;
-      state.value = state.value.filter((item)=>{
-        if(item.path==action.payload.path&&item.name==action.payload.name){
-          return false;
-        }
-        return true;
-      })
+      state.map.delete(action.payload);
     },
-    replace(state,payload){
-      
+    clear(state,action){
+
     }
   }
 });
 
-export const {add,remove,replace} = editorListSlice.actions;
+export const {add,remove,clear} = editorListSlice.actions;
 
 export default editorListSlice.reducer;

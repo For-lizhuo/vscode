@@ -1,16 +1,22 @@
 import { SourceManager,HeaderContainer,HeaderTitle,Ellipsis,
-  Container,Head,Title,List,
-  FolderList,FolderContainer,OpenFolderTitle,
+  Container,Head,Title,EditorListContainer,NavLink,FileName,Close,
+  OpenFolderTitle,FolderContainer,
   Info,Name,Button,Hidden
   } from "./style";
+import React,{ lazy,Suspense } from "react";
 import { IconContext } from "react-icons";
-import { VscEllipsis,VscChevronDown,VscChevronRight } from 'react-icons/vsc';
+import { VscEllipsis,VscChevronDown,VscChevronRight,VscClose } from 'react-icons/vsc';
 import { FcFolder,FcOpenedFolder,FcFile } from "react-icons/fc";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { open } from "../../../features/folderSlice";
-import { showFile, switchFile } from "../../../features/fileEditorSlice";
-import { add,replace } from "../../../features/editorList";
+import { showFile, switchFile,closeFile } from "../../../features/fileEditorSlice";
+import { add,remove } from "../../../features/editorList";
+import { EDITOR_MAX_QUANTITY } from "../../../../config";
+
+const FolderList = lazy(() => import('./style')
+  .then(module => ({ default: module.FolderList})));
+
 
 function Header(){
   return(
@@ -28,7 +34,54 @@ function Header(){
 }
 
 function EditorList(){
-  return <List>欢迎</List>
+  const {map} = useSelector((state)=>state.editorList);
+  const {file} = useSelector(state=>state.fileEditor);
+  const dispatch = useDispatch();
+  let isChosen,name;
+  const clickNavLink = (path)=>{
+    if(file.path==path) return;
+    dispatch(switchFile({path,...map.get(path)}));
+  };
+  const clickClose = (path)=>{
+    const arr = [...map.keys()];
+    let index = arr.indexOf(path);
+    dispatch(remove(path));
+    if(file.path!==path) return;
+    if(arr.length==1){
+      dispatch(closeFile());
+      return;
+    }
+    index==0?index++:index--;
+    dispatch(switchFile({
+      path:arr[index],...map.get(arr[index])
+    }))
+  };
+  return (
+    <EditorListContainer>
+      {map.size==0?null:
+        <>
+        {Array.from(map.keys()).map((path,index)=>{
+          isChosen = file.path==path;
+          name = map.get(path).name; 
+          return (
+            <NavLink key={index} isChosen={isChosen} onClick={()=>{clickNavLink(path)}} tabIndex={0}>
+              <Close isChosen={isChosen} onClick={(e)=>{e.stopPropagation;clickClose(path);}}>
+              <IconContext.Provider value={{size:'2.2vh'}}>
+                  <VscClose/>
+                </IconContext.Provider>
+              </Close>
+              <IconContext.Provider value={{size:'2.2vh'}}>
+                <FcFile/>
+              </IconContext.Provider>
+              <Name isChosen={isChosen}>{name}</Name>
+              {/* <PrePath isChosen={isChosen}></PrePath> */}
+            </NavLink>
+            )
+        })}
+        </>  
+      }
+    </EditorListContainer>
+  )
 }
 
 function EditorContent(){
@@ -115,29 +168,66 @@ function File(props){
   const dispatch = useDispatch();
   const handle = props.handle;
   const {file,isShown} = useSelector(state=>state.fileEditor);
-  const {quantity} = useSelector(state=>state.editorList);
+  const {map} = useSelector(state=>state.editorList);
   const clickFileInfo = async()=>{
-    if(quantity<5){
-      dispatch(add({name:props.name,path:props.path}));
-    };
-    const file = await handle.getFile();
-    const type = file.type.split('/');
+    const FILE = await handle.getFile();
     const reader = new FileReader();
+    const type = FILE.type;
     let value;
-    reader.readAsText(file,'utf-8');
+    if(type.includes('image')){
+      //读取图片格式
+      reader.onloadend = () => {
+        value = reader.result;
+        if(map.size<EDITOR_MAX_QUANTITY&&!map.has(props.path)){
+          dispatch(add({
+            path:props.path,
+            property:{
+              name:props.name,
+              type:FILE.type,
+              value
+            }
+          }));
+        };
+        {
+          if(isShown){
+            if(file.path == props.path) return;
+            dispatch(switchFile({value,name:props.name,path:props.path,type:FILE.type}));
+          }
+          else{
+            dispatch(showFile({value,name:props.name,path:props.path,type:FILE.type}));
+          }
+        }
+      };
+      reader.readAsDataURL(FILE);
+      return;
+    };
+    reader.readAsText(FILE,'utf-8');
     reader.onload = (e)=>{
       value = e.target.result;
-      if(isShown){
-        dispatch(switchFile({value,name:props.name,path:props.path,type}));
-      }
-      else{
-        dispatch(showFile({value,name:props.name,path:props.path,type}));
-      }
+      if(map.size<EDITOR_MAX_QUANTITY&&!map.has(props.path)){
+        dispatch(add({
+          path:props.path,
+          property:{
+            name:props.name,
+            type:FILE.type,
+            value
+          }
+        }));
+      };
+      {
+        if(isShown){
+          if(file.path == props.path) return;
+          dispatch(switchFile({value,name:props.name,path:props.path,type:FILE.type}));
+        }
+        else{
+          dispatch(showFile({value,name:props.name,path:props.path,type:FILE.type}));
+        }
+      }  
     };
   }
   return(
     <>
-      <Info tabIndex={0} layer={props.layer} onClick={clickFileInfo} isChosen={file.name==props.name&&file.path==props.path}>
+      <Info tabIndex={0} layer={props.layer} onClick={clickFileInfo} isChosen={file.path==props.path}>
         <Hidden>
             <VscChevronDown/>
         </Hidden>
@@ -173,13 +263,17 @@ function WorkSpace(){
       </IconContext.Provider>
       <Title>{isOpen?'工作区':'无打开的文件夹'}</Title>
     </Head>
-    <FolderContainer tabIndex={0}>
-      {fold?null:!isOpen?<OpenFolder/>:
-      <FolderList>
-        <FileTree list={fileTree.children} layer={0} path=''/>
-      </FolderList>
-      }
-    </FolderContainer>    
+      <FolderContainer tabIndex={0}>
+        {fold?null:!isOpen?<OpenFolder/>:
+        <Suspense fallback={<h1>loading</h1>}>
+          <FolderList>
+            <FileTree list={fileTree.children} layer={0} path=''/>
+          </FolderList>
+        </Suspense>
+        }
+      </FolderContainer>
+      
+        
   </Container>
   );
 }

@@ -24,18 +24,71 @@ export const Shown = styled.div`
 export const HeaderContainer = styled.div`
   flex-basis: 5vh;
   background-color: #21252B;
-
+  display: flex;
+  overflow-x: auto;
+  &::-webkit-scrollbar{
+    background-color: #21252B;
+    height: 0.5vh;
+  };
+  &::-webkit-scrollbar-thumb{
+    background-color: #21252B;
+    height: 0.1vh;
+    width: 0.1vh;
+    background-color: ${props=>props.isMouseEnter?'#3D4450':'#21252B'}
+  };
 `
-export const NavLink = styled.div`
-
+export const NavLink = styled.div.attrs(props=>({
+  style:{
+    backgroundColor:props.isChosen?'#282C34':'#21252B',
+    borderBottom:props.isChosen?'0.1vh solid white':'none'
+  }
+}
+))`
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  font-size:1.6vh;
+  cursor: pointer;
+  padding: 0 0.6vw;
+  border-right: 0.1vw solid #181A1F;
+  &:hover{
+    background-color: #323842 !important;
+  }
 `
-export const Name = styled.div`
-
+export const Name = styled.div.attrs(props=>({
+  style:{
+    color:props.isChosen?'#DCDCDC':'#76807B'
+  }
+}
+))`
+  white-space: nowrap;
+  padding-left: 0.2vw;
 `
-export const PrePath = styled.div`
-  
+export const PrePath = styled.div.attrs(props=>({
+  style:{
+    color:props.isChosen?'#979A9E':'#6E7178'
+  }
+}
+))`
+  white-space: nowrap;
+  padding-left: 0.2vw;
 `
-
+export const Close = styled.div.attrs(props=>({
+  style:{
+    color: props.isChosen?'#ABB2BF':'#878A8F'
+  }
+}
+))`
+  margin-left: 1vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius:20%;
+  padding: 0.2vh;
+  &:hover{
+    background-color: #3F444B;
+  }
+`
 export const PathContainer = styled.div`
   padding-left: 0.8vw;
   display: flex;
@@ -60,7 +113,6 @@ export const Pre = styled.pre`
   display: flex;
   overflow-y:auto;
 `
-
 export const CodeDetail=styled.code`
   flex: 1;
   font-family: consolas;
@@ -85,7 +137,26 @@ export const CodeDetail=styled.code`
   &::-webkit-scrollbar-corner{
     background-color:#282C34;
   }
-  &::-webkit-resizer{
-    display: none;
+`
+export const ImageContainer = styled.div`
+  display:flex;
+  flex:1;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+  &::-webkit-scrollbar{
+    background-color: #272B33;
+    width: 1vw;
+  };
+  &::-webkit-scrollbar-thumb{
+    background-color: #373C47;
+    height: 30vh;
+  };
+  &::-webkit-scrollbar-corner{
+    background-color:#282C34;
   }
+`
+export const Img = styled.img`
+  height: 50vh;
+  width: 50vh;
 `

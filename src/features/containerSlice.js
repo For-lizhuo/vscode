@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { containerWidth } from "../config";
+import { containerWidth } from "../../config";
 
 const initialState = {
   isDragging:false,

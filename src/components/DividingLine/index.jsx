@@ -2,7 +2,7 @@ import { DividingLine } from "./style";
 import { useDispatch,useSelector } from "react-redux";
 import { startDrag } from "../../features/containerSlice";
 import { useState } from "react";
-import { navBarWidth } from "../../config";
+import { navBarWidth } from "../../../config";
 
 export default function(props){
   const [mouseOver,setMouseOver] = useState(false);

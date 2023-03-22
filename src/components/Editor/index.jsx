@@ -1,34 +1,66 @@
 import { Editor,Background,Shown,
-  HeaderContainer,NavLink,Name,PrePath,
+  HeaderContainer,NavLink,Name,PrePath,Close,
   PathContainer,PathName,
+  ImageContainer,Img,
   CodeContainer,CodeDetail,Pre
 } from './style';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { Fragment ,useRef, useEffect, useState} from 'react';
 import { FcOpenedFolder,FcFile } from 'react-icons/fc';
-import { VscChevronRight } from 'react-icons/vsc';
+import { VscChevronRight,VscClose } from 'react-icons/vsc';
 import { IconContext } from "react-icons";
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
-import { highlightLanguages,navBarWidth } from '../../config';
+import { highlightLanguages,navBarWidth } from '../../../config';
+import { switchFile,closeFile } from '../../features/fileEditorSlice';
+import { remove } from '../../features/editorList';
 
 function Header(){
-  const {value,quantity} = useSelector((state)=>state.editorList);
-  useEffect(()=>{
-    console.log(quantity,value)
-  },[value,quantity])
+  const {map} = useSelector((state)=>state.editorList);
+  const {file} = useSelector(state=>state.fileEditor);
+  const [mouse,setMouse] = useState(false);
+  const dispatch = useDispatch();
+  let isChosen,name;
+  const clickNavLink = (path)=>{
+    if(file.path==path) return;
+    dispatch(switchFile({path,...map.get(path)}));
+  };
+  const clickClose = (path)=>{
+    const arr = [...map.keys()];
+    let index = arr.indexOf(path);
+    dispatch(remove(path));
+    if(file.path!==path) return;
+    if(arr.length==1){
+      dispatch(closeFile());
+      return;
+    }
+    index==0?index++:index--;
+    dispatch(switchFile({
+      path:arr[index],...map.get(arr[index])
+    }))
+  };
   return (
-    <HeaderContainer>
-      {quantity==0?null:
-        <>{value.toString()}
-        {value.map((item,index)=>{
-            <NavLink key={index}>
-              <FcFile/>123
-              <Name>{item.name}</Name>
-              <Path>{item.path}</Path>
+    <HeaderContainer isMouseEnter={mouse} onMouseEnter={()=>setMouse(true)} onMouseLeave={()=>setMouse(false)}>
+      {map.size==0?null:
+        <>
+        {Array.from(map.keys()).map((path,index)=>{
+          isChosen = file.path==path;
+          name = map.get(path).name; 
+          return (
+            <NavLink key={index} isChosen={isChosen} onClick={()=>{clickNavLink(path)}}>
+              <IconContext.Provider value={{size:'2.2vh'}}>
+                <FcFile/>
+              </IconContext.Provider>
+              <Name isChosen={isChosen}>{name}</Name>
+              {/* <PrePath isChosen={isChosen}></PrePath> */}
+              <Close isChosen={isChosen} onClick={(e)=>{e.stopPropagation();clickClose(path)}}>
+                <IconContext.Provider value={{size:'2.2vh'}}>
+                  <VscClose/>
+                </IconContext.Provider>
+              </Close>
             </NavLink>
-          })
-        }
+            )
+        })}
         </>  
       }
     </HeaderContainer>
@@ -81,26 +113,36 @@ function Code(){
     setCode(hljs.highlightAuto(value).value);
   },[path,name]);
  
-  return (
+  return(
     <CodeContainer>
-      <Pre>
-        <CodeDetail ref={codeRef} contentEditable={true} suppressContentEditableWarning={true} 
-        dangerouslySetInnerHTML={{ __html: code }}/>  
-      </Pre>
+    <Pre>
+      <CodeDetail ref={codeRef} suppressContentEditableWarning={true} 
+      dangerouslySetInnerHTML={{ __html: code }}/>  
+    </Pre>
     </CodeContainer>
+  )
+}
+
+function Image(){
+  const {file} = useSelector(state=>state.fileEditor);
+  return(
+    <ImageContainer>
+      <Img src={file.value} alt='图片无法显示'/>
+    </ImageContainer>
   )
 }
 
 export default function(){
   const {containerWidth} = useSelector(state=>state.container);
   const {isShown} = useSelector(state=>state.fileEditor);
+  const {type} = useSelector(state=>state.fileEditor.file);
   return(
     <Editor width={100-navBarWidth-containerWidth}>
       {isShown?
         <Shown>
           <Header/>
           <Path/>
-          <Code/>
+          {type.includes('image')?<Image/>:<Code/>}
         </Shown>:
         <Background/>
       }

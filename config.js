@@ -6,3 +6,6 @@ export const navBarWidth = 2.8;
 
 //container默认宽度，单位vw
 export const containerWidth = 22.5;
+
+//打开的编辑器最大数量
+export const EDITOR_MAX_QUANTITY = Infinity;
